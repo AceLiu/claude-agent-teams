@@ -4,12 +4,18 @@
 # 输出: prompt 文件路径到 stdout
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 WORKER_ROLE="${1:?用法: build-prompt.sh <worker-role> <project-root> <task-file> [--auto-next]}"
 PROJECT_ROOT="${2:?缺少 project-root 参数}"
 TASK_FILE="${3:?缺少 task-file 参数}"
 AUTO_NEXT="${4:-}"
+
+# 防御性校验：WORKER_ROLE 只能是小写字母/数字/连字符，防止路径遍历与 mktemp 模板注入
+if ! [[ "$WORKER_ROLE" =~ ^[a-z][a-z0-9-]*$ ]]; then
+  echo "[ERROR] 非法 worker-role: $WORKER_ROLE (仅允许小写字母/数字/连字符)" >&2
+  exit 1
+fi
 
 AGENT_DEF="$HOME/.claude/agents/${WORKER_ROLE}.md"
 BASE_DIR="$SCRIPT_DIR"

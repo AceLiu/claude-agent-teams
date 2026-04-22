@@ -8,7 +8,7 @@ set -euo pipefail
 PROJECT_ROOT="${1:-.}"
 GRADE="${2:-M}"
 PHASE="${3:-all}"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # 颜色
 RED='\033[0;31m'

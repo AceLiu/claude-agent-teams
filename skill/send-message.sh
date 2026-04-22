@@ -30,7 +30,9 @@ fi
 
 mkdir -p "$TARGET_DIR"
 
-MSG_FILE="${TARGET_DIR}/${TIMESTAMP}-${TYPE}.md"
+# 文件名加 PID + RANDOM 后缀：date +%s000 只是秒级伪毫秒，同一秒多条消息
+# 会产生同名文件，mv 时互相覆盖。加入 $$ (PID) + $RANDOM 确保唯一。
+MSG_FILE="${TARGET_DIR}/${TIMESTAMP}-${TYPE}-$$-${RANDOM}.md"
 # 原子写入：先写临时文件再 mv，防止并发竞争导致文件损坏
 TEMP_FILE=$(mktemp "${TARGET_DIR}/.tmp-msg-XXXXXX")
 {

@@ -1,10 +1,10 @@
 ---
 name: agent-teams
 description: "多 Agent 协作开发团队：产品经理定需求、架构师出方案、开发并行编码、测试审查验收。触发词：启动团队开发、team mode、团队模式、Agent Teams、启动协作开发、quick fix、快速修、小活"
-version: 4.2.0
+version: 4.2.1
 ---
 
-# Agent Teams v4.2.0
+# Agent Teams v4.2.1
 
 多角色 subagent 协作开发框架。Spec 驱动、ID 追溯、分级执行。
 

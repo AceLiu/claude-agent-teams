@@ -6,7 +6,7 @@ set -euo pipefail
 PROJECT_ROOT="${1:-.}"
 COLLAB_MODE=false
 GRADE=""
-BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 for arg in "$@"; do
   [ "$arg" = "--collab" ] && COLLAB_MODE=true

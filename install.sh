@@ -30,6 +30,17 @@ if [ ! -d "$SKILL_SRC" ] || [ ! -d "$AGENTS_SRC" ]; then
   exit 1
 fi
 
+# Bash 版本检查：task-dependency.sh 等脚本使用 declare -A 关联数组（需要 bash 4+）。
+# macOS 自带的 /bin/bash 是 3.2，使用 #!/usr/bin/env bash 时需要 PATH 中有 bash 4+。
+BASH_MAJOR="${BASH_VERSINFO[0]:-0}"
+if [ "$BASH_MAJOR" -lt 4 ]; then
+  c_red "❌ 当前 bash 版本过低 (${BASH_VERSION:-unknown})，需要 bash 4+"
+  c_red "   macOS 用户请安装：brew install bash"
+  c_red "   然后用新 bash 重试：/opt/homebrew/bin/bash install.sh  (Apple Silicon)"
+  c_red "   或 /usr/local/bin/bash install.sh  (Intel)"
+  exit 1
+fi
+
 c_green "▶ 开始安装 Agent Teams → $CLAUDE_HOME"
 echo ""
 
@@ -59,7 +70,8 @@ fi
 # --- 4. 安装 skill ---
 mkdir -p "$SKILL_DEST"
 cp -R "$SKILL_SRC/." "$SKILL_DEST/"
-chmod +x "$SKILL_DEST"/*.sh 2>/dev/null || true
+# 递归给所有 .sh 加执行位（glob *.sh 不会匹配子目录脚本）
+find "$SKILL_DEST" -type f -name "*.sh" -exec chmod +x {} +
 c_green "✓ skill 已安装: $SKILL_DEST ($(find "$SKILL_DEST" -type f | wc -l | tr -d ' ') 个文件)"
 
 # --- 5. 安装 agents ---

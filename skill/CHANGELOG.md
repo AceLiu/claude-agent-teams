@@ -1,5 +1,25 @@
 # Agent Teams Changelog
 
+## v4.2.1 — 安全与稳定性修复
+
+**修复**
+- `init-team.sh` / `build-prompt.sh` / `validate-all.sh`：BASE_DIR 改用 `${BASH_SOURCE[0]}`，避免被 `source` 调用时 `$0` 指向调用方 shell 导致 Hook 路径写入 `.claude/settings.json` 错误，协作模式永久失效
+- `leader-sync.sh`：重写 Worker 状态汇总逻辑，node 直接从文件读 JSON（不再把 `cat` 出的原始内容拼入 `node -e` 字符串），避免被篡改的 status 文件触发代码执行；同时新增 JSON 解析错误捕获与告警透出，不再静默吞掉异常
+- `build-prompt.sh`：对 `WORKER_ROLE` 参数增加格式校验（仅允许小写字母/数字/连字符），防止路径遍历与 mktemp 模板注入
+- `send-message.sh`：消息文件名加入 `$$` + `$RANDOM` 后缀，防止同一秒多条消息因伪毫秒时间戳冲突互相覆盖
+
+**安装器**
+- `install.sh` 启动时检查 bash ≥ 4（macOS 系统自带 bash 3.2 不满足 `declare -A`）
+- `install.sh` 用 `find -exec chmod` 递归给所有 `.sh` 加执行位（原 glob 不覆盖子目录脚本）
+
+## v4.2.0 — Executor 分级自检 + 按仓库合并 + Sonnet 优先
+
+- **Executor 按 complexity 分级自检**：每个 task 的 `complexity` 字段（low/medium/high）决定 Executor 的自检深度，避免对简单改动过度审查
+- **同仓库 task 合并 Executor**：多个 task 若在同一仓库，合并交给单个 Executor 顺序执行，减少 subagent 冷启动开销
+- **Model Routing 改 Sonnet 优先**：跨仓库一致性检查等范围受限场景从 Opus 降级到 Sonnet，成本下降
+- **三审查角色正式纳入**：`critic`（L 必须 / M 条件触发）、`evidence-collector`（Phase 4 含 UI 任务）、`reality-checker`（Phase 5 含 UI 项目）
+- SKILL.md 版本号升到 4.2.0（但本版 CHANGELOG 条目此前缺失，v4.2.1 补录）
+
 ## v4.1.0 — Task Executor 模式
 
 **核心变更**：Phase 4 引入 Task Executor 模式，将 Leader 逐 task 协调的 Dev→Review→Fix 循环，改为独立 Executor 全权处理 + Architect 批量审查。
