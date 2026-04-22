@@ -33,7 +33,7 @@ Tester → 渐进式测试（API → 数据 → E2E）
 ## 安装
 
 ```bash
-git clone https://github.com/<your-org>/claude-agent-teams.git
+git clone https://github.com/AceLiu/claude-agent-teams.git
 cd claude-agent-teams
 bash install.sh
 ```
