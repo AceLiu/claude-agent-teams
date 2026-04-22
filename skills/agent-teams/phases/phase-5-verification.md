@@ -149,7 +149,7 @@ E2E 失败 → 修复后重跑（单层内 max 2 轮）。
 - 测试报告 → `.team/test-reports/`
 - 截图 → `.team/screenshots/e2e/`（Chrome MCP 截图 + Playwright 截图）
 - Trace（Playwright 失败用例）→ `.team/test-reports/traces/`
-- Bug 通报：board.md @Dev，附失败用例 + 截图 + 错误日志
+- Bug 通报：send-message.sh 发给 Dev，附失败用例 + 截图 + 错误日志
 
 产出：`.team/test-reports/report.md`
 

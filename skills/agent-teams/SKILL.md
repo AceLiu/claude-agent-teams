@@ -200,7 +200,7 @@ Hook：`worker-sync.sh`（Worker PostToolUse）、`leader-sync.sh`（Leader Post
 
 | 场景 | 处理 |
 |------|------|
-| Agent 产出不达标 | board.md 反馈 → 重派 |
+| Agent 产出不达标 | send-message.sh 反馈 → 重派 |
 | Executor ESCALATE | **自动派 Debugger** 诊断 → 4 选 1: 补 context/升级 model/拆 task/上报用户（最多 3 轮） |
 | 批量审查 NEEDS_FIX | 定向重派对应 Executor 修复 → 重新批量审查 |
 | 回归 3 次仍不过 | 上报用户 |

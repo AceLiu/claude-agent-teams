@@ -116,7 +116,7 @@ cat >> "$PROMPT_FILE" << RULES
 5. **响应 Team Leader 消息**：Hook 会自动将 Team Leader 的消息传递给你，
    你会看到 \`[TEAM MESSAGE]\` 或 \`[URGENT MESSAGE]\` 标记。收到后必须优先响应并调整工作方向。
 
-6. **跨角色协作**：如果需要其他 Worker 的配合，通过 send-message.sh 写入 board.md 或通知 Team Leader 转达。
+6. **跨角色协作**：如果需要其他 Worker 的配合，通过 send-message.sh 发送消息（写入 .team/messages/），或通知 Team Leader 转达。
 RULES
 
 # 如果是自动调度模式，追加提示

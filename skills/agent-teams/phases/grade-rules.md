@@ -64,7 +64,7 @@ grade: S
 - Phase 2 可走简化版（`phase-2-m-lite.md`），该路径同时替代 Phase 1+2，Architect 一次产出 spec-lite.md
 - Phase 2 简化条件：需求清晰（G-xxx 可直接提取、无歧义、技术栈已知）
 - **文档深度按需裁剪**（v4.1.0）：M-lite 内分精简/标准两档，简单变更（AC≤5、≤1 新接口、无 DB 变更、无风险）可省略风险/技术方案/追溯矩阵/TC 完整字段，详见 `phase-2-m-lite.md`
-- Phase 3：1-3 个任务，标准模式，跳过 Designer；详细设计（Phase 3.7）简化为 Dev 在 board.md 中 2-3 段说明方案，无需产出独立文件；task 文件内联契约和 AC（v4.2.0）
+- Phase 3：1-3 个任务，标准模式，跳过 Designer；详细设计（Phase 3.7）简化为 Dev 在 task 备注或消息中 2-3 段说明方案，无需产出独立文件；task 文件内联契约和 AC（v4.2.0）
 - Phase 4：TaskExecutor 按仓库合并 + 自检分级（v4.2.0）；**跳过 4.2 独立批量审查**（Executor 自检 + Phase 5 验证已足够）
 - Phase 5：5.0 自动扫描 + 测试 + 全局审查合并；跳过 Critic
 - Phase 5 末尾 retro：默认跳过（rework_count ≥3 时建议执行）
@@ -101,7 +101,7 @@ grade: S
 |-------------|:--:|:-:|:-:|:-:|
 | Phase 1 需求+分级 | 跳过 | 跳过 | ✅ | ✅ |
 | Phase 2 设计 | 跳过 | 跳过 | ✅ 或 M-lite | ✅ |
-| Phase 3 拆解 | 跳过 | 跳过 | ✅（无 Designer；详细设计简化为 board.md 说明） | ✅ |
+| Phase 3 拆解 | 跳过 | 跳过 | ✅（无 Designer；详细设计简化为 task 备注说明） | ✅ |
 | Phase 4 开发 | ✅(自动) | ✅ | ✅ | ✅ |
 | Phase 4 Review | ✅(自动) | ✅ | **跳过**（v4.2.0） | 跨仓库一致性检查+Critic |
 | Phase 5.0 自动扫描 | 跳过 | 跳过 | ✅ | ✅ |

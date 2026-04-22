@@ -441,5 +441,5 @@ Phase 4 Leader Checklist:
 8. □ 批量审查 NEEDS_FIX → 定向重派 Executor → 重新审查
 9. □ L 级：Critic 终审
 10. □ 含 UI：EvidenceCollector 截图验收
-11. □ 全部完成 → 更新 status.md → 进入 Phase 5
+11. □ 全部完成 → 进入 Phase 5
 ```

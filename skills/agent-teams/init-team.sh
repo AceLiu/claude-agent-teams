@@ -58,31 +58,6 @@ else
   mkdir -p "$TEAM_DIR/reviews"
   mkdir -p "$TEAM_DIR/test-reports"
 
-  cat > "$TEAM_DIR/board.md" << 'EOF'
-# Team Board
-
-<!-- Agent 间的讨论、决策、@通知 -->
-<!-- 格式: ## [时间戳] @发送者 → @接收者 -->
-EOF
-
-  cat > "$TEAM_DIR/status.md" << 'EOF'
-# Team Status
-
-| 角色 | 状态 | 当前任务 |
-|------|------|----------|
-| Team Leader | active | 初始化团队 |
-| Product Manager | pending | - |
-| Architect | pending | - |
-| Tester | pending | - |
-| Designer | - | 未加载 |
-| Frontend Dev (Web) | - | 未加载 |
-| iOS Dev | - | 未加载 |
-| Android Dev | - | 未加载 |
-| Backend Dev | - | 未加载 |
-| AI Assistant | - | 未加载 |
-| Documentation Writer | - | 未加载 |
-EOF
-
   cat > "$TEAM_DIR/metrics.json" << 'METRICS_EOF'
 {
   "project": "",

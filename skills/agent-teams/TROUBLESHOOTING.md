@@ -165,15 +165,19 @@ cat .team/status/{role}.json | python3 -m json.tool
 echo '{"status":"idle","task":"","updated":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' > .team/status/{role}.json
 ```
 
-### Board 消息堆积
+### 消息堆积
+
+消息用 `read: false/true` 标记已读，文件不会自动删除。堆积多了手动归档：
 
 ```bash
-# 查看 board 行数
-wc -l .team/board.md
+# 统计各 Worker 的 inbox 文件数
+find .team/messages/inbox -name '*.md' | wc -l
 
-# 超过 200 行时建议归档
-mv .team/board.md .team/board-$(date +%Y%m%d).md
-echo "# Team Board" > .team/board.md
+# 归档已读消息（read: true）
+mkdir -p .team/messages/archive
+find .team/messages/{inbox,outbox} -name '*.md' \
+  -exec grep -l '^read: true' {} \; \
+  | xargs -I{} mv {} .team/messages/archive/
 ```
 
 ---

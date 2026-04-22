@@ -13,10 +13,10 @@
 
 ## 变更流程
 
-1. Leader 判定类型（A/B/C/D），board.md 记录原因和影响
+1. Leader 判定类型（A/B/C/D），在 task 备注或 commit message 中记录原因和影响
 2. 用户确认
 3. 执行：
-   - A/B：直接改 task，board.md 通知 Dev
+   - A/B：直接改 task，send-message.sh 通知 Dev
    - C/D：回退 Phase 2，更新 design.md/contracts.md，受影响 task 标 `invalidated`
 4. metrics.json `rework_count` +1
 
@@ -36,7 +36,7 @@
 
 ### 受影响 task 处理
 
-- 相关 in_progress task → `invalidated`，board.md 通知 Dev 停止
+- 相关 in_progress task → `invalidated`，send-message.sh 通知 Dev 停止
 - 无关 task → 继续
 - 回溯后为变更部分生成新 task（新 TASK-xxx）
 
