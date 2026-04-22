@@ -1,0 +1,41 @@
+{
+  "name": "agent-teams",
+  "version": "2.0.0",
+  "description": "Multi-agent collaborative development framework for Claude Code — Spec-driven, role-based, parallel execution with 15 built-in subagent roles (PM, Architect, TaskExecutor, Reviewer, Critic, and more).",
+  "author": {
+    "name": "AceLiu"
+  },
+  "homepage": "https://github.com/AceLiu/claude-agent-teams",
+  "repository": "https://github.com/AceLiu/claude-agent-teams",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "agents",
+    "skills",
+    "multi-agent",
+    "spec-driven-development",
+    "agent-teams",
+    "anthropic",
+    "collaboration",
+    "task-executor",
+    "code-review"
+  ],
+  "agents": [
+    "./agents/ai-assistant.md",
+    "./agents/android-dev.md",
+    "./agents/architect.md",
+    "./agents/backend-dev.md",
+    "./agents/critic.md",
+    "./agents/debugger.md",
+    "./agents/designer.md",
+    "./agents/documentation-writer.md",
+    "./agents/evidence-collector.md",
+    "./agents/frontend-dev.md",
+    "./agents/ios-dev.md",
+    "./agents/product-manager.md",
+    "./agents/reality-checker.md",
+    "./agents/reviewer.md",
+    "./agents/task-executor.md"
+  ],
+  "skills": ["./skills/"]
+}

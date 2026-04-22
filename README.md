@@ -26,25 +26,37 @@ Tester → 渐进式测试（API → 数据 → E2E）
 
 | 必需 | 可选 |
 |------|------|
-| [Claude Code](https://docs.claude.com/claude-code) ≥ 2.0 | `tmux`（L 级多窗口 worker 需要）|
-| Python 3.8+ | `jq`（部分 JSON 解析脚本）|
-| Bash 4+ | `chrome-webmcp` skill（Phase 5 E2E 测试可选）|
+| [Claude Code](https://docs.claude.com/claude-code) ≥ 2.1 | `tmux`（L 级多窗口 worker 需要）|
+| `bash` ≥ 4（macOS 建议 `brew install bash`）| `jq`（部分 JSON 解析脚本）|
+| Python 3.8+ | `chrome-webmcp` skill（Phase 5 E2E 测试可选）|
+| Node.js（用于状态同步脚本）| |
 
 ## 安装
 
-```bash
-git clone https://github.com/AceLiu/claude-agent-teams.git
-cd claude-agent-teams
-bash install.sh
+在 Claude Code 会话中执行两条命令：
+
+```
+/plugin marketplace add AceLiu/claude-agent-teams
+/plugin install agent-teams@claude-agent-teams
 ```
 
-安装器会：
-1. 复制 `skill/` → `~/.claude/skills/agent-teams/`
-2. 复制 `agents/*.md` → `~/.claude/agents/`（15 个角色定义）
-3. 自动备份已存在的同名文件到 `~/.claude/*.backup.<时间戳>/`
-4. 检测 tmux/jq/python3 可选依赖
+第一条把本仓库注册为 marketplace，第二条装 plugin。Claude Code 会自动：
+- 将 `skills/agent-teams/` 注册为可用 skill
+- 将 `agents/*.md` 注册为可用 subagent 角色（15 个）
 
-**重要**：安装后**重启 Claude Code**（或新开会话），让它重新扫描 agents 目录。
+安装后**重启 Claude Code**（或新开会话）让它重新扫描。
+
+### 升级
+
+```
+/plugin update agent-teams
+```
+
+### 卸载
+
+```
+/plugin uninstall agent-teams
+```
 
 ## 快速开始
 
@@ -60,47 +72,7 @@ bash install.sh
 
 skill 会自动引导你走完 Phase 1 → 2 → 3 → 4 → 5，每个阶段都会停下让你审核。
 
-详细用法见 `~/.claude/skills/agent-teams/QUICKSTART.md`（安装后生成）。
-
-## 目录结构
-
-```
-claude-agent-teams/
-├── README.md           # 本文件
-├── install.sh          # 安装器
-├── uninstall.sh        # 卸载器
-├── LICENSE
-├── skill/              # → ~/.claude/skills/agent-teams/
-│   ├── SKILL.md        # skill 入口（含触发词）
-│   ├── QUICKSTART.md   # 1 页纸上手指南
-│   ├── CHANGELOG.md    # 版本历史
-│   ├── CHEATSHEET.md   # 常用指令速查
-│   ├── TROUBLESHOOTING.md
-│   ├── phases/         # Phase 1-5 详细流程
-│   ├── checklists/     # 代码审查清单
-│   ├── templates/      # 常见场景模板（CRUD、handoff 等）
-│   ├── schema/         # Spec 格式定义
-│   ├── knowledge/      # agent-kb 知识库规范
-│   ├── docs/           # 故障排查 / 恢复指南
-│   └── *.sh / *.py     # 辅助脚本
-│
-└── agents/             # → ~/.claude/agents/ (15 个角色)
-    ├── product-manager.md
-    ├── architect.md
-    ├── task-executor.md
-    ├── frontend-dev.md
-    ├── backend-dev.md
-    ├── ios-dev.md
-    ├── android-dev.md
-    ├── ai-assistant.md
-    ├── designer.md
-    ├── documentation-writer.md
-    ├── reviewer.md
-    ├── critic.md
-    ├── debugger.md
-    ├── evidence-collector.md
-    └── reality-checker.md
-```
+详细用法见 `skills/agent-teams/QUICKSTART.md`。
 
 ## 工作流概览
 
@@ -111,7 +83,30 @@ claude-agent-teams/
 | **M** | AC ≤ 14 且文件 ≤ 15 | Phase 1-5 全流程（Phase 2 可走 lite 版）|
 | **L** | AC ≥ 15 或文件 > 15 | Phase 1-5 全流程 + Critic 终审 + 多 worker 并行 |
 
-分级自动判定，用户可override。
+分级自动判定，用户可 override。
+
+## 仓库结构
+
+```
+claude-agent-teams/                    # marketplace + plugin 同仓库
+├── .claude-plugin/
+│   ├── plugin.json                    # plugin manifest
+│   └── marketplace.json               # marketplace 索引
+├── skills/
+│   └── agent-teams/                   # skill 主体（44 文件）
+│       ├── SKILL.md                   # skill 入口（触发词）
+│       ├── QUICKSTART.md              # 1 页纸上手指南
+│       ├── phases/                    # Phase 1-5 详细流程
+│       ├── checklists/ templates/ ...
+│       └── *.sh / *.py                # 辅助脚本
+├── agents/                            # 15 个 subagent 角色定义
+│   ├── product-manager.md   architect.md   task-executor.md
+│   ├── frontend-dev.md      backend-dev.md ios-dev.md
+│   ├── android-dev.md       ai-assistant.md designer.md
+│   ├── documentation-writer.md reviewer.md critic.md
+│   ├── debugger.md          evidence-collector.md reality-checker.md
+├── README.md  LICENSE  .gitignore
+```
 
 ## 状态目录
 
@@ -124,20 +119,17 @@ skill 运行时会在 `~/.claude/` 下创建：
 
 项目级产出物写在每个项目的 `.team/` 目录下（随项目 git 管理）。
 
-## 卸载
+## 版本
 
-```bash
-bash uninstall.sh
-```
-
-卸载器只删 skill 和 agents，**保留** `~/.claude/agent-kb/` 和 `~/.claude/metrics/`（你的工作记录）。如需彻底清理，手动 `rm -rf`。
+- **Plugin 版本**（对外）：查看 `.claude-plugin/plugin.json` 或 `/plugin info agent-teams`
+- **Skill 版本**（内部）：查看 `skills/agent-teams/SKILL.md` frontmatter 或 `CHANGELOG.md`
 
 ## 贡献
 
 Issue / PR 欢迎。提 PR 前请：
-1. 在本地跑 `bash install.sh` 验证能装上
-2. 修改 skill 文档后更新 `skill/CHANGELOG.md`
-3. 新增 agent 角色时，确保 frontmatter 包含 `name` 和 `description`
+1. 在本地用 `/plugin marketplace add /path/to/claude-agent-teams`（指向本地 clone）验证能装上
+2. 修改 skill 后同步更新 `skills/agent-teams/CHANGELOG.md`
+3. 新增 agent 角色时，同时更新 `.claude-plugin/plugin.json` 的 `agents` 数组（必须显式列出每个文件路径）
 
 ## License
 
