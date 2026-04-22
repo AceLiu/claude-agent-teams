@@ -84,50 +84,6 @@ else
 }
 METRICS_EOF
 
-  # 知识库自动初始化
-  PROJECT_NAME=$(basename "$PROJECT_ROOT")
-  KB_DIR="$HOME/.claude/agent-kb/$PROJECT_NAME"
-  if [ ! -d "$KB_DIR" ]; then
-    mkdir -p "$KB_DIR/insights/platform"
-    mkdir -p "$KB_DIR/insights/business"
-    TODAY=$(date +%Y-%m-%d)
-
-    cat > "$KB_DIR/overview.md" << KBEOF
----
-updated: $TODAY
----
-
-# 项目概览
-
-## 技术栈
-<!-- Agent 首次分析项目时自动填充 -->
-
-## 核心模块
-<!-- 模块名 + 一句话职责 -->
-
-## 部署方式
-<!-- 本地开发 / 测试 / 生产 -->
-KBEOF
-
-    cat > "$KB_DIR/pitfalls.md" << PITEOF
----
-updated: $TODAY
----
-
-# 踩坑记录
-
-<!-- 格式：
-## PIT-001: 简短标题
-- **原因**: 为什么会出问题
-- **正确做法**: 应该怎么做
-- **来源**: 时间 + 事件
-- **关键词**: [关键词1, 关键词2]
--->
-PITEOF
-
-    echo "  ✅ 已初始化项目知识库: $KB_DIR"
-  fi
-
   echo "✅ .team/ 基础目录已初始化 (v4.0.0)"
 fi
 
