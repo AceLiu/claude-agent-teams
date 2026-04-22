@@ -56,10 +56,11 @@ for project in "${PROJECTS[@]}"; do
   echo ""
 
   FILE_COUNT=0
-  PROJ_SPEC_TOTAL=0
-  PROJ_DEV_TOTAL=0
-  PROJ_REVIEW_TOTAL=0
-  PROJ_TEST_TOTAL=0
+  PROJ_P1_TOTAL=0
+  PROJ_P2_TOTAL=0
+  PROJ_P3_TOTAL=0
+  PROJ_P4_TOTAL=0
+  PROJ_P5_TOTAL=0
   PROJ_REWORK_TOTAL=0
 
   for f in "$PROJECT_DIR"/*.json; do
@@ -79,43 +80,47 @@ for project in "${PROJECTS[@]}"; do
           safe(d.requirement || 'unknown'),
           safe(d.level || '?'),
           safe(d.date || '?'),
-          (p.spec||{}).duration_min||0,
-          (p.develop||{}).duration_min||0,
-          (p.review||{}).duration_min||0,
-          (p.testing||{}).duration_min||0,
-          (p.spec||{}).rework_count||0,
-          (p.develop||{}).rework_count||0,
-          (p.review||{}).rework_count||0,
-          (p.testing||{}).rework_count||0,
+          (p.phase1_requirements||{}).duration_min||0,
+          (p.phase2_design||{}).duration_min||0,
+          (p.phase3_tasking||{}).duration_min||0,
+          (p.phase4_development||{}).duration_min||0,
+          (p.phase5_verification||{}).duration_min||0,
+          (p.phase1_requirements||{}).rework_count||0,
+          (p.phase2_design||{}).rework_count||0,
+          (p.phase3_tasking||{}).rework_count||0,
+          (p.phase4_development||{}).rework_count||0,
+          (p.phase5_verification||{}).rework_count||0,
           bugs.P0||0, bugs.P1||0, bugs.P2||0,
           cov.coverage_rate||0
         ].join('|'));
       } catch(e) { process.exit(1); }
     " 2>/dev/null) || continue
 
-    IFS='|' read -r REQ_NAME LEVEL DATE SPEC_DUR DEV_DUR REVIEW_DUR TEST_DUR \
-      SPEC_RW DEV_RW REVIEW_RW TEST_RW BUGS_P0 BUGS_P1 BUGS_P2 COV_RATE <<< "$METRICS_JSON"
+    IFS='|' read -r REQ_NAME LEVEL DATE P1_DUR P2_DUR P3_DUR P4_DUR P5_DUR \
+      P1_RW P2_RW P3_RW P4_RW P5_RW BUGS_P0 BUGS_P1 BUGS_P2 COV_RATE <<< "$METRICS_JSON"
 
-    REWORK=$((SPEC_RW + DEV_RW + REVIEW_RW + TEST_RW))
-    TOTAL_DUR=$((SPEC_DUR + DEV_DUR + REVIEW_DUR + TEST_DUR))
+    REWORK=$((P1_RW + P2_RW + P3_RW + P4_RW + P5_RW))
+    TOTAL_DUR=$((P1_DUR + P2_DUR + P3_DUR + P4_DUR + P5_DUR))
 
     if [ "$SHOW_ALL" = true ]; then
       echo "  ### ${REQ_NAME} (${LEVEL}级, ${DATE})"
       echo "  | 阶段 | 耗时(min) | 返工次数 |"
       echo "  |------|-----------|----------|"
-      echo "  | Spec | ${SPEC_DUR} | ${SPEC_RW} |"
-      echo "  | Dev  | ${DEV_DUR} | ${DEV_RW} |"
-      echo "  | Review | ${REVIEW_DUR} | ${REVIEW_RW} |"
-      echo "  | Test | ${TEST_DUR} | ${TEST_RW} |"
+      echo "  | P1 需求 | ${P1_DUR} | ${P1_RW} |"
+      echo "  | P2 设计 | ${P2_DUR} | ${P2_RW} |"
+      echo "  | P3 拆解 | ${P3_DUR} | ${P3_RW} |"
+      echo "  | P4 开发 | ${P4_DUR} | ${P4_RW} |"
+      echo "  | P5 验证 | ${P5_DUR} | ${P5_RW} |"
       echo "  | **总计** | **${TOTAL_DUR}** | **${REWORK}** |"
       echo "  Bugs: P0=${BUGS_P0} P1=${BUGS_P1} P2=${BUGS_P2} | 覆盖率: ${COV_RATE}"
       echo ""
     fi
 
-    PROJ_SPEC_TOTAL=$((PROJ_SPEC_TOTAL + SPEC_DUR))
-    PROJ_DEV_TOTAL=$((PROJ_DEV_TOTAL + DEV_DUR))
-    PROJ_REVIEW_TOTAL=$((PROJ_REVIEW_TOTAL + REVIEW_DUR))
-    PROJ_TEST_TOTAL=$((PROJ_TEST_TOTAL + TEST_DUR))
+    PROJ_P1_TOTAL=$((PROJ_P1_TOTAL + P1_DUR))
+    PROJ_P2_TOTAL=$((PROJ_P2_TOTAL + P2_DUR))
+    PROJ_P3_TOTAL=$((PROJ_P3_TOTAL + P3_DUR))
+    PROJ_P4_TOTAL=$((PROJ_P4_TOTAL + P4_DUR))
+    PROJ_P5_TOTAL=$((PROJ_P5_TOTAL + P5_DUR))
     PROJ_REWORK_TOTAL=$((PROJ_REWORK_TOTAL + REWORK))
     TOTAL_REWORK=$((TOTAL_REWORK + REWORK))
     TOTAL_BUGS_P0=$((TOTAL_BUGS_P0 + BUGS_P0))
@@ -126,22 +131,24 @@ for project in "${PROJECTS[@]}"; do
   TOTAL_TASKS=$((TOTAL_TASKS + FILE_COUNT))
 
   if [ "$FILE_COUNT" -gt 0 ]; then
-    AVG_SPEC=$((PROJ_SPEC_TOTAL / FILE_COUNT))
-    AVG_DEV=$((PROJ_DEV_TOTAL / FILE_COUNT))
-    AVG_REVIEW=$((PROJ_REVIEW_TOTAL / FILE_COUNT))
-    AVG_TEST=$((PROJ_TEST_TOTAL / FILE_COUNT))
+    AVG_P1=$((PROJ_P1_TOTAL / FILE_COUNT))
+    AVG_P2=$((PROJ_P2_TOTAL / FILE_COUNT))
+    AVG_P3=$((PROJ_P3_TOTAL / FILE_COUNT))
+    AVG_P4=$((PROJ_P4_TOTAL / FILE_COUNT))
+    AVG_P5=$((PROJ_P5_TOTAL / FILE_COUNT))
     AVG_REWORK=$((PROJ_REWORK_TOTAL / FILE_COUNT))
 
     echo "  需求总数: ${FILE_COUNT}"
-    echo "  平均耗时(min): Spec=${AVG_SPEC} Dev=${AVG_DEV} Review=${AVG_REVIEW} Test=${AVG_TEST}"
+    echo "  平均耗时(min): P1=${AVG_P1} P2=${AVG_P2} P3=${AVG_P3} P4=${AVG_P4} P5=${AVG_P5}"
     echo "  平均返工次数: ${AVG_REWORK}"
 
-    # 返工热力图：找出返工最多的阶段
-    MAX_RW=$PROJ_SPEC_TOTAL
-    MAX_PHASE="Spec"
-    [ "$PROJ_DEV_TOTAL" -gt "$MAX_RW" ] && MAX_RW=$PROJ_DEV_TOTAL && MAX_PHASE="Dev"
-    [ "$PROJ_REVIEW_TOTAL" -gt "$MAX_RW" ] && MAX_RW=$PROJ_REVIEW_TOTAL && MAX_PHASE="Review"
-    [ "$PROJ_TEST_TOTAL" -gt "$MAX_RW" ] && MAX_RW=$PROJ_TEST_TOTAL && MAX_PHASE="Test"
+    # 耗时最长阶段
+    MAX_DUR=$PROJ_P1_TOTAL
+    MAX_PHASE="P1 需求"
+    [ "$PROJ_P2_TOTAL" -gt "$MAX_DUR" ] && MAX_DUR=$PROJ_P2_TOTAL && MAX_PHASE="P2 设计"
+    [ "$PROJ_P3_TOTAL" -gt "$MAX_DUR" ] && MAX_DUR=$PROJ_P3_TOTAL && MAX_PHASE="P3 拆解"
+    [ "$PROJ_P4_TOTAL" -gt "$MAX_DUR" ] && MAX_DUR=$PROJ_P4_TOTAL && MAX_PHASE="P4 开发"
+    [ "$PROJ_P5_TOTAL" -gt "$MAX_DUR" ] && MAX_DUR=$PROJ_P5_TOTAL && MAX_PHASE="P5 验证"
     echo "  耗时最长阶段: ${MAX_PHASE}"
   fi
   echo ""
